@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js"> <!--<![endif]-->
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Tengo's print</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <!--<link rel="stylesheet" href="./css/main.css">-->
+        
+        <style>
+            .container {
+                font-family:Verdana, Geneva, Tahoma, sans-serif;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+            }
+            .options {
+                margin-bottom: 2em;
+                top: 50%;
+                position: fixed;
+                background-color: rgba(69, 69, 69, 0.8);
+                padding: 1em;
+                width: 100%;
+                text-align: center;
+                font-size: 1.6em;
+            }
+            #page {
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: space-around;
+                align-items: space-around;
+                border: 1px solid black;
+            }
+            @media print {
+                body * { visibility:hidden; }
+                #page * { 
+                    visibility: visible;
+                }
+                .label {
+                width: 19mm;
+                }   
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <div class="options">
+                <h1>Quick label printing</h1>
+                <select name="product" id="product">
+                    <option value="YPPERLIG">Ypperlig</option>
+                    <option value="TORSKLINT">Torsklint</option>
+                    <option value="ALVARET">Alvaret</option>
+                    <option value="BASSALT">Bassalt</option>
+                </select>
+                
+                <input id="date" type="number" placeholder="Date">
+                <button id="make-btn" onclick="_changeNameDate()">Done</button>
+            </div>
+            <div id="page"></div>
+        </div>
+
+<script>
+        const page = document.querySelector("#page");
+        page.style.width = "210mm";
+        page.style.height = "291mm";
+        _generatePage();
+
+    function _dateNow(){
+        let d = new Date();
+        let firstDay= new Date("jan 1").setFullYear(d.getFullYear());
+        console.log(d.getTime());
+        let dayOfTheYear = Math.floor((d.getTime()-firstDay)/(1000*60*60*24));
+        return Math.ceil(dayOfTheYear/7);
+    }
+    
+    function _generatePage(){
+        var nrOfLabels = 55;
+
+        for (var i=0; i<nrOfLabels; i++) {
+            let labelNew = document.createElement("object");
+                labelNew.data = "./img/PQR.svg";
+                labelNew.type = "image/svg+xml";
+                labelNew.classList.add("label");
+            page.appendChild(labelNew);
+        }
+    }
+
+    function _changeNameDate(){
+        //parameters
+        let productSelect = document.querySelector("#product");
+        let dateInput = document.querySelector("#date");
+        let svg = document.querySelectorAll("object");
+        for (let i = 0; i < svg.length; i++) {
+            let element = svg[i].contentDocument;
+            let svgDateEl = element.querySelector("#tspan4891");
+            let svgNameEl = element.querySelector("#tspan4197");
+                svgDateEl.textContent = dateInput.value;
+                svgNameEl.textContent = productSelect.value;
+        }
+    }
+
+</script>
+
+    </body>
+</html>
